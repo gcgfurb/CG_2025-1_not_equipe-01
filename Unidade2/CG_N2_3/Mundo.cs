@@ -1,4 +1,4 @@
-﻿﻿/*
+﻿/*
  As constantes dos pré-processors estão nos arquivos ".csproj"
  desse projeto e da CG_Biblioteca.
 */
@@ -210,11 +210,19 @@ namespace gcgcg
         objetoSelecionado.ObjetoAtualizar();
       }
 
-      if (estadoTeclado.IsKeyPressed(Keys.Q))
-      {
+      if (estadoTeclado.IsKeyPressed(Keys.Q)) {
         objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X - 0.1, objetoSelecionado.PontosId(0).Y +  0, 0), 0);
         objetoSelecionado.ObjetoAtualizar();
-        Console.WriteLine(pontosLista)
+        objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X - 0.1, objetoSelecionado.PontosId(1).Y +  0, 0), 1);
+        objetoSelecionado.ObjetoAtualizar();
+      }
+
+      if (estadoTeclado.IsKeyPressed(Keys.W)) {
+      
+        objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X + 0.1, objetoSelecionado.PontosId(0).Y +  0, 0), 0);
+        objetoSelecionado.ObjetoAtualizar();
+        objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X + 0.1, objetoSelecionado.PontosId(1).Y +  0, 0), 1);
+        objetoSelecionado.ObjetoAtualizar();
       }
       #endregion
     }
