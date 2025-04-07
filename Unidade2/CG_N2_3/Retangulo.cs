@@ -5,9 +5,6 @@ namespace gcgcg
 {
   internal class Retangulo : Objeto
   {
-
-    private Ponto4D ptoInfEsq {get; set;}
-    private Ponto4D ptoSupDir {get; set;}
     public Retangulo(Objeto _paiRef, ref char _rotulo) : this(_paiRef, ref _rotulo, new Ponto4D(-0.5, -0.5), new Ponto4D(0.5, 0.5))
     {
 
@@ -18,8 +15,6 @@ namespace gcgcg
       PrimitivaTipo = PrimitiveType.Points;
       PrimitivaTamanho = 10;
 
-      this.ptoSupDir = ptoSupDir;
-      this.ptoInfEsq = ptoInfEsq;
       // Sentido horário
       base.PontosAdicionar(ptoInfEsq);
       base.PontosAdicionar(new Ponto4D(ptoSupDir.X, ptoInfEsq.Y));

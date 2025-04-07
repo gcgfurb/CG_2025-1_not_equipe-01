@@ -212,10 +212,35 @@ namespace gcgcg
 
       if (estadoTeclado.IsKeyPressed(Keys.Q))
       {
-        objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X - 0.1, objetoSelecionado.PontosId(0).Y +  0, 0), 0);
+        objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X - 0.1, objetoSelecionado.PontosId(0).Y + 0, 0), 0);
         objetoSelecionado.ObjetoAtualizar();
-        Console.WriteLine(pontosLista)
+        // Console.WriteLine(pontosLista);
       }
+
+      if (estadoTeclado.IsKeyPressed(Keys.S))
+      {
+        objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X + 0.1, objetoSelecionado.PontosId(1).Y + 0.1, 0), 1);
+        objetoSelecionado.ObjetoAtualizar();
+      }
+
+      if (estadoTeclado.IsKeyPressed(Keys.A))
+      {
+        objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X - 0.1, objetoSelecionado.PontosId(1).Y - 0.1, 0), 1);
+        objetoSelecionado.ObjetoAtualizar();
+      }
+
+      if (estadoTeclado.IsKeyPressed(Keys.Z))
+      {
+        objetoSelecionado.MatrizRotacao(5);
+        objetoSelecionado.ObjetoAtualizar();
+      }
+
+      if (estadoTeclado.IsKeyPressed(Keys.X))
+      {
+        objetoSelecionado.MatrizRotacao(-5);
+        objetoSelecionado.ObjetoAtualizar();
+      }
+
       #endregion
     }
 
