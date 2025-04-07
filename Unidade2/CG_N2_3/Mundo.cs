@@ -24,6 +24,10 @@ namespace gcgcg
     private Objeto objetoSelecionado = null;
     private Transformacao4D matrizGrafo = new();
 
+    public double angulo = 45;
+
+    public bool flagTrocou = false;
+
 #if CG_Gizmo
     private readonly float[] _sruEixos =
     [
@@ -211,18 +215,163 @@ namespace gcgcg
       }
 
       if (estadoTeclado.IsKeyPressed(Keys.Q)) {
-        objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X - 0.1, objetoSelecionado.PontosId(0).Y +  0, 0), 0);
-        objetoSelecionado.ObjetoAtualizar();
-        objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X - 0.1, objetoSelecionado.PontosId(1).Y +  0, 0), 1);
-        objetoSelecionado.ObjetoAtualizar();
+          objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X - 0.1, objetoSelecionado.PontosId(0).Y +  0, 0), 0);
+          objetoSelecionado.ObjetoAtualizar();
+
+          objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X - 0.1, objetoSelecionado.PontosId(1).Y + 0, 0), 1);
+          objetoSelecionado.ObjetoAtualizar();
+
       }
 
       if (estadoTeclado.IsKeyPressed(Keys.W)) {
       
-        objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X + 0.1, objetoSelecionado.PontosId(0).Y +  0, 0), 0);
-        objetoSelecionado.ObjetoAtualizar();
-        objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X + 0.1, objetoSelecionado.PontosId(1).Y +  0, 0), 1);
-        objetoSelecionado.ObjetoAtualizar();
+          objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X + 0.1, objetoSelecionado.PontosId(0).Y +  0, 0), 0);
+          objetoSelecionado.ObjetoAtualizar();
+          objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X + 0.1, objetoSelecionado.PontosId(1).Y +  0, 0), 1);
+          objetoSelecionado.ObjetoAtualizar();
+      }
+
+      if (estadoTeclado.IsKeyPressed(Keys.S))
+      {
+
+        double cateto_ad = 0;
+          double cateto_op = 0;
+          double xInfEsqAbs = objetoSelecionado.PontosId(0).X;
+          double xSupEsqAbs = objetoSelecionado.PontosId(1).X;
+
+          double yInfEsqAbs = objetoSelecionado.PontosId(0).Y;
+          double ySupEsqAbs = objetoSelecionado.PontosId(1).Y;
+
+          cateto_ad += xSupEsqAbs - xInfEsqAbs;
+
+          cateto_op += ySupEsqAbs - yInfEsqAbs;
+
+          double raio = Math.Sqrt(Math.Pow(cateto_op, 2) +  Math.Pow(cateto_ad, 2));
+          double controle = Math.Round(raio, 2);
+          if(raio <= 0.06){
+            this.angulo += 180;
+            this.flagTrocou = !flagTrocou;
+          }
+         
+
+          double radians = this.angulo * (Math.PI / 180);
+          
+          double x = 0.1 * Math.Cos(radians);
+          double y = 0.1 * Math.Sin(radians);
+
+         
+
+          if(!this.flagTrocou)
+          {
+            objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X + x,objetoSelecionado.PontosId(1).Y +  y, 0), 1);
+          }
+          else{
+            objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X - x,objetoSelecionado.PontosId(1).Y -  y, 0), 1);
+          }
+          
+          objetoSelecionado.ObjetoAtualizar();
+
+      }
+
+      if (estadoTeclado.IsKeyPressed(Keys.A))
+      {
+
+         double cateto_ad = 0;
+          double cateto_op = 0;
+          double xInfEsqAbs = objetoSelecionado.PontosId(0).X;
+          double xSupEsqAbs = objetoSelecionado.PontosId(1).X;
+
+          double yInfEsqAbs = objetoSelecionado.PontosId(0).Y;
+          double ySupEsqAbs = objetoSelecionado.PontosId(1).Y;
+
+          cateto_ad += xSupEsqAbs - xInfEsqAbs;
+
+          cateto_op += ySupEsqAbs - yInfEsqAbs;
+
+          double raio = Math.Sqrt(Math.Pow(cateto_op, 2) +  Math.Pow(cateto_ad, 2));
+          double controle = Math.Round(raio, 2);
+          if(raio <= 0.06){
+            this.angulo += 180;
+            this.flagTrocou = !flagTrocou;
+          }
+         
+
+          double radians = this.angulo * (Math.PI / 180);
+          
+          double x = 0.1 * Math.Cos(radians);
+          double y = 0.1 * Math.Sin(radians);
+
+         
+
+          if(!this.flagTrocou)
+          {
+            objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X - x,objetoSelecionado.PontosId(1).Y -  y, 0), 1);
+          }
+          else{
+            objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X + x,objetoSelecionado.PontosId(1).Y +  y, 0), 1);
+          }
+          
+          objetoSelecionado.ObjetoAtualizar();
+
+      }
+
+      if (estadoTeclado.IsKeyPressed(Keys.Z)) {
+          double cateto_ad = 0;
+          double cateto_op = 0;
+          double xInfEsqAbs = objetoSelecionado.PontosId(0).X;
+          double xSupEsqAbs = objetoSelecionado.PontosId(1).X;
+
+          double yInfEsqAbs = objetoSelecionado.PontosId(0).Y;
+          double ySupEsqAbs = objetoSelecionado.PontosId(1).Y;
+
+
+          cateto_ad += xSupEsqAbs - xInfEsqAbs;
+
+          cateto_op += ySupEsqAbs - yInfEsqAbs;
+          
+
+
+          
+          this.angulo += 1;
+
+          double raio = Math.Sqrt(Math.Pow(cateto_op, 2) +  Math.Pow(cateto_ad, 2));
+          double radians = this.angulo * (Math.PI / 180);
+          
+          double x = raio * Math.Cos(radians);
+          double y = raio * Math.Sin(radians);
+
+
+          objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X + x,objetoSelecionado.PontosId(0).Y +  y, 0), 1);
+          objetoSelecionado.ObjetoAtualizar();
+      }
+
+      if (estadoTeclado.IsKeyPressed(Keys.X)) {
+          double cateto_ad = 0;
+          double cateto_op = 0;
+          double xInfEsqAbs = objetoSelecionado.PontosId(0).X;
+          double xSupEsqAbs = objetoSelecionado.PontosId(1).X;
+
+          double yInfEsqAbs = objetoSelecionado.PontosId(0).Y;
+          double ySupEsqAbs = objetoSelecionado.PontosId(1).Y;
+
+
+          cateto_ad += xSupEsqAbs - xInfEsqAbs;
+
+          cateto_op += ySupEsqAbs - yInfEsqAbs;
+          
+          
+          this.angulo -= 1;
+
+          double raio = Math.Sqrt(Math.Pow(cateto_op, 2) +  Math.Pow(cateto_ad, 2));
+          double radians = this.angulo * (Math.PI / 180);
+          
+          double x = raio * Math.Cos(radians);
+          double y = raio * Math.Sin(radians);
+
+
+          objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X + x,objetoSelecionado.PontosId(0).Y +  y, 0), 1);
+          objetoSelecionado.ObjetoAtualizar();
+
       }
       #endregion
     }
