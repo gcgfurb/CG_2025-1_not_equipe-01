@@ -6,7 +6,7 @@ namespace gcgcg
 {
   internal class Poligono : Objeto
   {
-    public Poligono(Objeto _paiRef, ref char _rotulo, List<Ponto4D> pontosPoligono) : base(_paiRef, ref _rotulo)
+     public Poligono(Objeto _paiRef, ref char _rotulo, List<Ponto4D> pontosPoligono) : base(_paiRef, ref _rotulo)
     {
       PrimitivaTipo = PrimitiveType.LineLoop;
       PrimitivaTamanho = 1;

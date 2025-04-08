@@ -2,7 +2,6 @@
 class SegReta {
     + SegReta(_paiRef:Objeto, _rotulo:char)
     + SegReta(_paiRef:Objeto, _rotulo:char, ptoIni:Ponto4D, ptoFim:Ponto4D)
-    + Atualizar() : void
     + <<override>> ToString() : string
 }
 Objeto <|-- SegReta

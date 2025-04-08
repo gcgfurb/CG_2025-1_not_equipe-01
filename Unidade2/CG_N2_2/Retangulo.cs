@@ -25,7 +25,6 @@ namespace gcgcg
 
     private void Atualizar()
     {
-
       base.ObjetoAtualizar();
     }
 

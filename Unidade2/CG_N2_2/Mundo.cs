@@ -44,11 +44,11 @@ namespace gcgcg
     private Shader _shaderAzul;
     private Shader _shaderCiano;
 
-    public int count = 0;
-
     private bool mouseMovtoPrimeiro = true;
     private Ponto4D mouseMovtoUltimo;
 
+    private PrimitiveType[] types = { PrimitiveType.Points, PrimitiveType.Lines, PrimitiveType.LineLoop, PrimitiveType.LineStrip, PrimitiveType.Triangles, PrimitiveType.TriangleFan };
+    private int indexTemp = 0;
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
       : base(gameWindowSettings, nativeWindowSettings)
     {
@@ -64,7 +64,7 @@ namespace gcgcg
       Console.WriteLine("Tamanho interno da janela de desenho: " + ClientSize.X + "x" + ClientSize.Y);
 #endif
 
-      GL.ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+      GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
       #region Cores
       _shaderVermelha = new Shader("Shaders/shader.vert", "Shaders/shaderVermelha.frag");
@@ -87,31 +87,44 @@ namespace gcgcg
       stopwatch.Start();
 #endif
 
-      #region Objeto: Retangulo  
-      objetoSelecionado = new Retangulo(mundo, ref rotuloAtual)
-            {
-              PrimitivaTipo = PrimitiveType.Points,
-               ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderMagenta.frag")
-            };
-     /* #endregion
-      #region Objeto: segmento de reta  
-      objetoSelecionado = new SegReta(mundo, ref rotuloAtual, new Ponto4D(-0.25, -0.25), new Ponto4D(-0.75, -0.75));
-      #endregion
-      #region Objeto: ponto  
-      objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(0.25, -0.25))
+      #region Objeto: retângulo  
+      objetoSelecionado = new Retangulo(mundo, ref rotuloAtual, new Ponto4D(-0.1, 0.1), new Ponto4D(-0.75, 0.75))
       {
-        PrimitivaTipo = PrimitiveType.Points,
-        PrimitivaTamanho = 10
-      };*/
+        PrimitivaTipo = PrimitiveType.LineLoop
+      };
+      /* #endregion
+       #region Objeto: segmento de reta  
+       objetoSelecionado = new SegReta(mundo, ref rotuloAtual, new Ponto4D(-0.25, -0.25), new Ponto4D(-0.75, -0.75));
+       #endregion
+       #region Objeto: ponto  
+       objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(0.25, -0.25))
+       {
+         PrimitivaTipo = PrimitiveType.Points,
+         PrimitivaTamanho = 10
+       };*/
       #endregion
 
 #if CG_Privado
-      #region Objeto: retangulo
-      objetoSelecionado = new Retangulo(mundo, ref rotuloAtual)
-            {
-              PrimitivaTipo = PrimitiveType.Points,
-               ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderMagenta.frag")
-            };
+      #region Objeto: circulo - origem
+      objetoSelecionado = new Circulo(mundo, ref rotuloAtual, 0.2)
+      {
+        ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderAmarela.frag")
+      };
+      #endregion
+      #region Objeto: circulo
+      objetoSelecionado = new Circulo(mundo, ref rotuloAtual, 0.1, new Ponto4D(0.0, -0.5))
+      {
+        ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderAmarela.frag")
+      };
+      #endregion
+      #region Objeto: SrPalito  
+      objetoSelecionado = new SrPalito(mundo, ref rotuloAtual);
+      #endregion
+      #region Objeto: SplineBezier
+      objetoSelecionado = new SplineBezier(mundo, ref rotuloAtual);
+      #endregion
+      #region Objeto: SplineInter
+      objetoSelecionado = new SplineInter(mundo, ref rotuloAtual);
       #endregion
 #endif
 
@@ -133,7 +146,7 @@ namespace gcgcg
       if (stopwatch.ElapsedMilliseconds >= 1000)
       {
         Console.WriteLine($"FPS: {frames}");
-        frames = 0; 
+        frames = 0;
         stopwatch.Restart();
       }
 #endif
@@ -146,81 +159,24 @@ namespace gcgcg
 
       #region Teclado
       var estadoTeclado = KeyboardState;
-      if (estadoTeclado.IsKeyPressed(Keys.Escape))
-        Close();
+
+      if (estadoTeclado.IsKeyPressed(Keys.Space) && objetoSelecionado != null)
+      {
+        objetoSelecionado.PrimitivaTipo =  types[indexTemp]; 
+         
+        indexTemp++;
+        if (indexTemp >= types.Length)
+        {
+          indexTemp = 0;
+        }
+      } 
+
+
+      #endregion
 
       #region Funções de apoio para o desenvolvimento. Não é do enunciado  
-      if (estadoTeclado.IsKeyPressed(Keys.Space)){
+      if (estadoTeclado.IsKeyPressed(Keys.Space))
         objetoSelecionado = Grafocena.GrafoCenaProximo(mundo, objetoSelecionado, grafoLista);
-        switch (this.count) {
-          case 0:
-            objetoSelecionado = new Retangulo(mundo, ref rotuloAtual)
-            {
-              PrimitivaTipo = PrimitiveType.Points,
-               ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderBranca.frag")
-            };
-            objetoSelecionado = new Retangulo(mundo, ref rotuloAtual)
-            {
-              PrimitivaTipo = PrimitiveType.Lines,
-              ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderMagenta.frag")
-            };
-             break;
-          case 1:
-            objetoSelecionado = new Retangulo(mundo, ref rotuloAtual)
-            {
-              PrimitivaTipo = PrimitiveType.LineLoop,
-              ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderMagenta.frag")
-            };
-             break;
-          case 2:
-            objetoSelecionado = new Retangulo(mundo, ref rotuloAtual)
-            {
-              PrimitivaTipo = PrimitiveType.LineStrip,
-              ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderMagenta.frag")
-            };
-             break;
-          case 3:
-            objetoSelecionado = new Retangulo(mundo, ref rotuloAtual)
-            {
-              PrimitivaTipo = PrimitiveType.Triangles,
-              ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderMagenta.frag")
-            };
-             break;
-          case 4:
-            objetoSelecionado = new Retangulo(mundo, ref rotuloAtual)
-            {
-              PrimitivaTipo = PrimitiveType.TriangleStrip,
-              ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderMagenta.frag")
-            };
-             break;
-          case 5:
-            objetoSelecionado = new Retangulo(mundo, ref rotuloAtual)
-            {
-              PrimitivaTipo = PrimitiveType.TriangleFan,
-              ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderMagenta.frag")
-            };
-             break;
-          case 6:
-          objetoSelecionado = new Retangulo(mundo, ref rotuloAtual)
-            {
-              PrimitivaTipo = PrimitiveType.TriangleFan,
-               ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderBranca.frag")
-            };
-
-            objetoSelecionado = new Retangulo(mundo, ref rotuloAtual)
-            {
-              PrimitivaTipo = PrimitiveType.Points,
-               ShaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderMagenta.frag")
-            };
-             break;   
-        } 
-        this.count++;
-
-        if (this.count == 7) {
-          this.count = 0;
-        }
-      }
-        
 
       if (estadoTeclado.IsKeyPressed(Keys.F))
         Grafocena.GrafoCenaImprimir(mundo, grafoLista);
@@ -251,7 +207,6 @@ namespace gcgcg
         //FIXME: Spline limpa os pontos da Spline, mas não limpa pontos e poliedro de controle 
         objetoSelecionado.PontosApagar();
       }
-      #endregion
       #endregion
 
       #region  Mouse

@@ -1,4 +1,4 @@
-using CG_Biblioteca;
+/*using CG_Biblioteca;
 using OpenTK.Graphics.OpenGL4;
 
 namespace gcgcg
@@ -38,4 +38,4 @@ namespace gcgcg
 #endif
 
   }
-}
+}*/

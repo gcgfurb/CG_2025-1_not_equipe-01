@@ -6,30 +6,31 @@ namespace gcgcg
 {
   internal class Circulo : Objeto
   {
-    public Circulo(Objeto _paiRef, ref char _rotulo, Double _raio) : this(_paiRef, ref _rotulo, _raio, new Ponto4D(0.5, 0.5))
+    public Circulo(Objeto _paiRef, ref char _rotulo) : this(_paiRef, ref _rotulo, new Ponto4D(-0.5, -0.5), new Ponto4D(0.5, 0.5))
     {
 
     }
 
-    public Circulo(Objeto _paiRef, ref char _rotulo, Double _raio, Ponto4D ptoDeslocamento) : base(_paiRef, ref _rotulo)
+    public Circulo(Objeto _paiRef, ref char _rotulo, Ponto4D ptoInfEsq, Ponto4D ptoSupDir) : base(_paiRef, ref _rotulo)
     {
-      PrimitivaTipo = PrimitiveType.TriangleFan;
-      PrimitivaTamanho = 5;
-      
+      PrimitivaTipo = PrimitiveType.Points;
+      PrimitivaTamanho = 0.5f;
+      double raio = 0.5;
+
       for (int i = 0; i < 72; i++) {
         double angulo = (2 * 3.14 * i) / 72;
-        double x = _raio * Math.Cos(angulo);
-        double y = _raio * Math.Sin(angulo);
+        double x = raio * Math.Cos(angulo);
+        double y = raio * Math.Sin(angulo);
 
         Ponto4D ponto = new Ponto4D(x, y);
         base.PontosAdicionar(ponto);
         
       }
 
-      Atualizar(ptoDeslocamento);
+      Atualizar();
     }
 
-    private void Atualizar(Ponto4D ptoDeslocamento)
+    private void Atualizar()
     {
       base.ObjetoAtualizar();
     }
