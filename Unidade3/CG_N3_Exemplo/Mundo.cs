@@ -193,7 +193,6 @@ namespace gcgcg
 
       // ## 3. Estrutura de dados: polígono
       // Utilize a tecla D para remover o polígono selecionado. 
-      /*  */ 
       if (estadoTeclado.IsKeyPressed(Keys.D) && objetoSelecionado != null)
       {
         objetoSelecionado.ObjetoRemover();
@@ -203,6 +202,7 @@ namespace gcgcg
       // Utilize a posição do mouse junto com a tecla V para mover vértice mais próximo do polígono selecionado.  
       if (estadoTeclado.IsKeyDown(Keys.V) && objetoSelecionado != null)
       {
+        objetoSelecionado.
         Console.WriteLine("## 4. Estrutura de dados: vértices mover - Tecla V");
       }
 

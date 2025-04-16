@@ -14,6 +14,15 @@ namespace gcgcg
       Atualizar();
     }
 
+    public void vertiticeMaisProximo() {
+      List<Ponto4D> pontosPoligono =  base.pontosLista;
+
+      foreach (var ponto in pontosPoligono)
+      {
+         
+      }
+    }
+
     private void Atualizar()
     {
 
