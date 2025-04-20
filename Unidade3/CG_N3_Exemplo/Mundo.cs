@@ -212,6 +212,9 @@ namespace gcgcg
       // Utilize a tecla E para remover o vértice do polígono selecionado mais próximo do ponto do mouse.  
       if (estadoTeclado.IsKeyPressed(Keys.E) && objetoSelecionado != null)
       {
+        Poligono p = (Poligono) objetoSelecionado;
+        Ponto4D mousePoint = Utilitario.NDC_TelaSRU(ClientSize.X, ClientSize.Y, new Ponto4D(MousePosition.X, MousePosition.Y));
+        p.RemoveNearest(mousePoint);
         Console.WriteLine("## 5. Estrutura de dados: vértices remover - Tecla E");
       }
 

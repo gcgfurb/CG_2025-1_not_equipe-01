@@ -32,6 +32,13 @@ namespace gcgcg
       Atualizar();
     }
 
+    public void RemoveNearest(Ponto4D point)
+    {
+      Ponto4D nearest = NearestPoint(point);
+      base.pontosLista.Remove(nearest);
+      Atualizar();
+    }
+
     private void Atualizar()
     {
       base.ObjetoAtualizar();
