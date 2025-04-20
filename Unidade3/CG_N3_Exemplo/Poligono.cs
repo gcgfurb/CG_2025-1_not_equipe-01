@@ -1,10 +1,11 @@
 using CG_Biblioteca;
 using OpenTK.Graphics.OpenGL4;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace gcgcg
 {
-  internal class Poligono : Objeto
+  public class Poligono : Objeto
   {
     public Poligono(Objeto _paiRef, ref char _rotulo, List<Ponto4D> pontosPoligono) : base(_paiRef, ref _rotulo)
     {
@@ -14,18 +15,25 @@ namespace gcgcg
       Atualizar();
     }
 
-    public void vertiticeMaisProximo() {
-      List<Ponto4D> pontosPoligono =  base.pontosLista;
+    private Ponto4D NearestPoint(Ponto4D point) 
+    {
+      IDistanceStrategy distance = new Manhattan();
+      
+      return base.pontosLista
+        .OrderBy(p => distance.Distance(p.X, p.Y, point.X, point.Y))
+        .First();
+    }
 
-      foreach (var ponto in pontosPoligono)
-      {
-         
-      }
+    public void MoveNearest(Ponto4D point) 
+    {
+      Ponto4D nearest = NearestPoint(point);
+      nearest.X = point.X;
+      nearest.Y = point.Y;
+      Atualizar();
     }
 
     private void Atualizar()
     {
-
       base.ObjetoAtualizar();
     }
 

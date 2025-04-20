@@ -202,7 +202,9 @@ namespace gcgcg
       // Utilize a posição do mouse junto com a tecla V para mover vértice mais próximo do polígono selecionado.  
       if (estadoTeclado.IsKeyDown(Keys.V) && objetoSelecionado != null)
       {
-        objetoSelecionado.
+        Poligono p = (Poligono) objetoSelecionado;
+        Ponto4D mousePoint = Utilitario.NDC_TelaSRU(ClientSize.X, ClientSize.Y, new Ponto4D(MousePosition.X, MousePosition.Y));
+        p.MoveNearest(mousePoint);
         Console.WriteLine("## 4. Estrutura de dados: vértices mover - Tecla V");
       }
 
