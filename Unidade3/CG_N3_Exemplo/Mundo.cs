@@ -151,6 +151,7 @@ namespace gcgcg
     protected override void OnUpdateFrame(FrameEventArgs e)
     {
       base.OnUpdateFrame(e);
+      Ponto4D ponto = Utilitario.NDC_TelaSRU(ClientSize.X, ClientSize.Y, new Ponto4D(MousePosition.X, MousePosition.Y));
 
       // ☞ 396c2670-8ce0-4aff-86da-0f58cd8dcfdc   TODO: forma otimizada para teclado.
       #region Teclado
@@ -205,8 +206,7 @@ namespace gcgcg
       if (estadoTeclado.IsKeyDown(Keys.V) && objetoSelecionado != null)
       {
         Poligono p = (Poligono)objetoSelecionado;
-        Ponto4D mousePoint = Utilitario.NDC_TelaSRU(ClientSize.X, ClientSize.Y, new Ponto4D(MousePosition.X, MousePosition.Y));
-        p.MoveNearest(mousePoint);
+        p.MoveNearest(ponto);
         Console.WriteLine("## 4. Estrutura de dados: vértices mover - Tecla V");
       }
 
@@ -215,8 +215,7 @@ namespace gcgcg
       if (estadoTeclado.IsKeyPressed(Keys.E) && objetoSelecionado != null)
       {
         Poligono p = (Poligono)objetoSelecionado;
-        Ponto4D mousePoint = Utilitario.NDC_TelaSRU(ClientSize.X, ClientSize.Y, new Ponto4D(MousePosition.X, MousePosition.Y));
-        p.RemoveNearest(mousePoint);
+        p.RemoveNearest(ponto);
         Console.WriteLine("## 5. Estrutura de dados: vértices remover - Tecla E");
       }
 
@@ -224,7 +223,10 @@ namespace gcgcg
       // Utilize a tecla P para poder mudar o polígono selecionado para aberto ou fechado.  
       if (estadoTeclado.IsKeyPressed(Keys.P) && objetoSelecionado != null)
       {
-        Console.WriteLine("## 7. Interação: desenho - Tecla P");
+        objetoSelecionado.PrimitivaTipo =
+            objetoSelecionado.PrimitivaTipo == PrimitiveType.LineLoop
+            ? PrimitiveType.LineStrip
+            : PrimitiveType.LineLoop;
       }
 
       // ## 8. Interação: cores
@@ -275,17 +277,13 @@ namespace gcgcg
       // Utilize o mouse para clicar na tela com botão direito e poder desenhar um novo polígono.  
       if (MouseState.IsButtonPressed(MouseButton.Right))
       {
-        var mouse = MouseState.Position;
-        double x = 2.0 * mouse.X / Size.X - 1.0;
-        double y = 1.0 - 2.0 * mouse.Y / Size.Y;
         if (objetoSelecionado != null)
         {
-          Ponto4D ponto = new Ponto4D(x, y);
           objetoSelecionado.PontosAdicionar(ponto);
         }
         else
         {
-          List<Ponto4D> pontosIniciais = new() { new Ponto4D(x, y) };
+          List<Ponto4D> pontosIniciais = new() { ponto };
           objetoSelecionado = new Poligono(mundo, ref rotuloAtual, pontosIniciais);
         }
 
