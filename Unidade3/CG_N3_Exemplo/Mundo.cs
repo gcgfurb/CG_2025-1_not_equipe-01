@@ -142,7 +142,7 @@ namespace gcgcg
       if (stopwatch.ElapsedMilliseconds >= 1000)
       {
         Console.WriteLine($"FPS: {frames}");
-        frames = 0; 
+        frames = 0;
         stopwatch.Restart();
       }
 #endif
@@ -310,17 +310,11 @@ namespace gcgcg
       // Caso o polígono seja selecionado se deve exibir a sua BBbox, caso contrário a variável objetoSelecionado deve ser "null", e assim nenhum contorno de BBox deve ser exibido.  
       if (MouseState.IsButtonPressed(MouseButton.Left) && objetoNovo == null)
       {
-        objetoSelecionado = grafoLista.FirstOrDefault(obj => {
-          Poligono p = (Poligono) obj.Value;
-          return p.Bbox().Dentro(ponto) && p.ScanLine(ponto, ref objetoSelecionado);
+        objetoSelecionado = grafoLista.Select(kv => kv.Value).FirstOrDefault(obj =>
+        {
+          Objeto p = obj;
+          return p.Bbox().Dentro(ponto) && p.ScanLine(ponto, ref p);
         });
-        if (objetoSelecionado != null && 
-            objetoSelecionado.Bbox().Dentro(ponto) &&
-            objetoSelecionado.ScanLine(ponto, ref objetoSelecionado)) {
-          Console.WriteLine("DENTROOOO");
-        }
-        Console.WriteLine("Vector2i windowSize: " + ClientSize);
-
 
         Console.WriteLine("Vector2 mousePosition (NDC): " + MousePosition);
         if (objetoSelecionado != null)
