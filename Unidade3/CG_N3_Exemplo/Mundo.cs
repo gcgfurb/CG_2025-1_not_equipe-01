@@ -224,7 +224,10 @@ namespace gcgcg
       // Utilize a tecla P para poder mudar o polígono selecionado para aberto ou fechado.  
       if (estadoTeclado.IsKeyPressed(Keys.P) && objetoSelecionado != null)
       {
-        Console.WriteLine("## 7. Interação: desenho - Tecla P");
+        objetoSelecionado.PrimitivaTipo =
+            objetoSelecionado.PrimitivaTipo == PrimitiveType.LineLoop
+            ? PrimitiveType.LineStrip
+            : PrimitiveType.LineLoop;
       }
 
       // ## 8. Interação: cores
