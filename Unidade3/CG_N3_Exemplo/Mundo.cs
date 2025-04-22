@@ -12,6 +12,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace gcgcg
 {
@@ -309,17 +310,22 @@ namespace gcgcg
       // Caso o polígono seja selecionado se deve exibir a sua BBbox, caso contrário a variável objetoSelecionado deve ser "null", e assim nenhum contorno de BBox deve ser exibido.  
       if (MouseState.IsButtonPressed(MouseButton.Left) && objetoNovo == null)
       {
-        Console.WriteLine("MouseState.IsButtonPressed(MouseButton.Left)");
-        Console.WriteLine("__ Valores do Espaço de Tela");
+        objetoSelecionado = grafoLista.FirstOrDefault(obj => {
+          Poligono p = (Poligono) obj.Value;
+          return p.Bbox().Dentro(ponto) && p.ScanLine(ponto, ref objetoSelecionado);
+        });
+        if (objetoSelecionado != null && 
+            objetoSelecionado.Bbox().Dentro(ponto) &&
+            objetoSelecionado.ScanLine(ponto, ref objetoSelecionado)) {
+          Console.WriteLine("DENTROOOO");
+        }
         Console.WriteLine("Vector2i windowSize: " + ClientSize);
 
-        Console.WriteLine("Vector2 mousePosition: " + MousePosition);
 
-        Ponto4D sruPonto = Utilitario.NDC_TelaSRU(ClientSize.X, ClientSize.Y, new Ponto4D(MousePosition.X, MousePosition.Y));
         Console.WriteLine("Vector2 mousePosition (NDC): " + MousePosition);
         if (objetoSelecionado != null)
         {
-          sruPonto = objetoSelecionado.MatrizGlobalInversa(sruPonto);
+          ponto = objetoSelecionado.MatrizGlobalInversa(ponto);
           Console.WriteLine("Vector2 mousePosition (Objeto): " + MousePosition);
         }
       }
