@@ -262,14 +262,14 @@ namespace gcgcg
       // ## 12. Transformações Geométricas: rotação
       // Utilizando as teclas numéricas 1 e 2 gire o polígono selecionado em relação ao SRU.
       if (estadoTeclado.IsKeyPressed(Keys.D1) && objetoSelecionado != null)
-        Console.WriteLine("## 12. Transformações Geométricas: rotação - Tecla 1");
+        objetoSelecionado.MatrizRotacao(10);
       if (estadoTeclado.IsKeyPressed(Keys.D2) && objetoSelecionado != null)
-        Console.WriteLine("## 12. Transformações Geométricas: rotação - Tecla 2");
+        objetoSelecionado.MatrizRotacao(-10);
       // Utilizando as teclas numéricas 3 e 4 gire o polígono selecionado em relação ao centro da sua BBox.
       if (estadoTeclado.IsKeyPressed(Keys.D3) && objetoSelecionado != null)
-        Console.WriteLine("## 12. Transformações Geométricas: rotação - Tecla 3");
+        objetoSelecionado.MatrizRotacaoZBBox(10);
       if (estadoTeclado.IsKeyPressed(Keys.D4) && objetoSelecionado != null)
-        Console.WriteLine("## 12. Transformações Geométricas: rotação - Tecla 4");
+        objetoSelecionado.MatrizRotacaoZBBox(-10);
       #endregion
 
       #region  Mouse
