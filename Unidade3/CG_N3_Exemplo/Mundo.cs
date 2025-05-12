@@ -22,6 +22,7 @@ namespace gcgcg
 
     private char rotuloAtual = '?';
     private Dictionary<char, Objeto> grafoLista = [];
+    private Objeto objetoPai = null;
     private Objeto objetoSelecionado = null;
     private Objeto objetoNovo = null;
     private Transformacao4D matrizGrafo = new();
@@ -163,6 +164,7 @@ namespace gcgcg
       #region Funções de apoio para o desenvolvimento. Não é do enunciado  
       if (estadoTeclado.IsKeyPressed(Keys.Space))
       {
+        objetoPai = null;
         objetoSelecionado = Grafocena.GrafoCenaProximo(mundo, objetoSelecionado, grafoLista);
         if (objetoSelecionado != null)
           objetoSelecionado.ObjetoAtualizar();
@@ -190,9 +192,9 @@ namespace gcgcg
       // Quando pressionar a tecla Enter finaliza o desenho do novo polígono.  
       if (estadoTeclado.IsKeyPressed(Keys.Enter))
       {
+        objetoPai = objetoSelecionado;
         objetoSelecionado = Grafocena.GrafoCenaProximo(mundo, objetoSelecionado, grafoLista);
-        if (objetoSelecionado != null)
-          objetoSelecionado.ObjetoAtualizar();
+        objetoSelecionado?.ObjetoAtualizar();
       }
 
       // ## 3. Estrutura de dados: polígono
@@ -284,8 +286,8 @@ namespace gcgcg
         }
         else
         {
-          List<Ponto4D> pontosIniciais = new() { ponto };
-          objetoSelecionado = new Poligono(mundo, ref rotuloAtual, pontosIniciais);
+          List<Ponto4D> pontosIniciais = [ponto];
+          objetoSelecionado = new Poligono(objetoPai ?? mundo, ref rotuloAtual, pontosIniciais);
         }
 
       }
