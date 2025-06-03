@@ -107,8 +107,13 @@ namespace gcgcg
 
       #region Objeto: Cubo
       objetoSelecionado = new Cubo(mundo, ref rotuloNovo);
+      objetoSelecionado.shaderCor = _shaderVerde;
+
+      objetoSelecionado = new Cubo(mundo, ref rotuloNovo);
+      objetoSelecionado.MatrizEscalaXYZ(0.1, 0.1, 0.1);
+      objetoSelecionado.MatrizTranslacaoXYZ(0, 0, 3);
+      objetoSelecionado.shaderCor = _shaderAzul;
       #endregion
-      // objetoSelecionado.MatrizEscalaXYZ(0.2, 0.2, 0.2);
 
       objetoSelecionado.shaderCor = _shaderAmarela;
 
@@ -150,6 +155,7 @@ namespace gcgcg
       {
         if (objetoSelecionado == null)
           objetoSelecionado = mundo;
+        
         objetoSelecionado.shaderCor = _shaderBranca;
         objetoSelecionado = mundo.GrafocenaBuscaProximo(objetoSelecionado);
         objetoSelecionado.shaderCor = _shaderAmarela;
