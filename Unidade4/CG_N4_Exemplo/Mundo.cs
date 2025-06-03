@@ -52,6 +52,11 @@ namespace gcgcg
 
     private Camera _camera;
 
+    // Em sua classe, adicione este campo:
+    private Vector2 _ultimaPosicaoMouse;
+    private bool _primeiroMovimentoMouse = true;
+
+
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
            : base(gameWindowSettings, nativeWindowSettings)
     {
@@ -135,7 +140,7 @@ namespace gcgcg
       if (stopwatch.ElapsedMilliseconds >= 1000)
       {
         Console.WriteLine($"FPS: {frames}");
-        frames = 0; 
+        frames = 0;
         stopwatch.Restart();
       }
 #endif
@@ -155,7 +160,7 @@ namespace gcgcg
       {
         if (objetoSelecionado == null)
           objetoSelecionado = mundo;
-        
+
         objetoSelecionado.shaderCor = _shaderBranca;
         objetoSelecionado = mundo.GrafocenaBuscaProximo(objetoSelecionado);
         objetoSelecionado.shaderCor = _shaderAmarela;
@@ -212,22 +217,41 @@ namespace gcgcg
         _camera.Position += _camera.Up * cameraSpeed * (float)e.Time; // Up
       if (estadoTeclado.IsKeyDown(Keys.LeftShift))
         _camera.Position -= _camera.Up * cameraSpeed * (float)e.Time; // Down
-      // if (estadoTeclado.IsKeyDown(Keys.D9))
-      //   _camera.Position += _camera.Up * cameraSpeed * (float)e.Time; // Up
-      // if (estadoTeclado.IsKeyDown(Keys.D0))
-      //   _camera.Position -= _camera.Up * cameraSpeed * (float)e.Time; // Down
+                                                                      // if (estadoTeclado.IsKeyDown(Keys.D9))
+                                                                      //   _camera.Position += _camera.Up * cameraSpeed * (float)e.Time; // Up
+                                                                      // if (estadoTeclado.IsKeyDown(Keys.D0))
+                                                                      //   _camera.Position -= _camera.Up * cameraSpeed * (float)e.Time; // Down
 
       #endregion
 
       #region  Mouse
 
-      if (MouseState.IsButtonPressed(MouseButton.Left))
+      if (MouseState.IsButtonDown(MouseButton.Left))
       {
-        Console.WriteLine("MouseState.IsButtonPressed(MouseButton.Left)");
-        Console.WriteLine("__ Valores do Espaço de Tela");
-        Console.WriteLine("Vector2 mousePosition: " + MousePosition);
-        Console.WriteLine("Vector2i windowSize: " + ClientSize);
+        var mouse = MouseState.Position;
+
+        if (_primeiroMovimentoMouse)
+        {
+          _ultimaPosicaoMouse = mouse;
+          _primeiroMovimentoMouse = false;
+        }
+
+        var deltaX = mouse.X - _ultimaPosicaoMouse.X;
+        var deltaY = _ultimaPosicaoMouse.Y - mouse.Y; // Inverter Y (sistema de coordenadas de tela)
+
+        _ultimaPosicaoMouse = mouse;
+        float sensibilidade = 0.2f;
+        _camera.Yaw += deltaX * sensibilidade;
+        _camera.Pitch += deltaY * sensibilidade;
+
+        _camera.Pitch = Math.Clamp(_camera.Pitch, -89f, 89f);
+
       }
+      else
+      {
+        _primeiroMovimentoMouse = true;
+      }
+
       if (MouseState.IsButtonDown(MouseButton.Right) && objetoSelecionado != null)
       {
         Console.WriteLine("MouseState.IsButtonDown(MouseButton.Right)");
