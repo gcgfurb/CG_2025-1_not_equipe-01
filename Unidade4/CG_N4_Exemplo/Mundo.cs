@@ -52,10 +52,10 @@ namespace gcgcg
 
     private Camera _camera;
 
-    // Em sua classe, adicione este campo:
     private Vector2 _ultimaPosicaoMouse;
     private bool _primeiroMovimentoMouse = true;
 
+    private Ponto objetoMenor;
 
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
            : base(gameWindowSettings, nativeWindowSettings)
@@ -112,15 +112,17 @@ namespace gcgcg
 
       #region Objeto: Cubo
       objetoSelecionado = new Cubo(mundo, ref rotuloNovo);
-      objetoSelecionado.shaderCor = _shaderVerde;
+      // objetoSelecionado.shaderCor = _shaderVerde;
 
-      objetoSelecionado = new Cubo(mundo, ref rotuloNovo);
-      objetoSelecionado.MatrizEscalaXYZ(0.1, 0.1, 0.1);
-      objetoSelecionado.MatrizTranslacaoXYZ(0, 0, 3);
-      objetoSelecionado.shaderCor = _shaderAzul;
+      objetoMenor = new Ponto(objetoSelecionado, ref rotuloNovo)
+      {
+        PrimitivaTamanho = 10,
+        shaderCor = _shaderAzul
+      };
+      objetoMenor.MatrizTranslacaoXYZ(2, 0, 0);
       #endregion
 
-      objetoSelecionado.shaderCor = _shaderAmarela;
+      // objetoSelecionado.shaderCor = _shaderAmarela;
 
       _camera = new Camera(Vector3.UnitZ * 5, ClientSize.X / (float)ClientSize.Y);
     }
@@ -268,8 +270,9 @@ namespace gcgcg
         Console.WriteLine("MouseState.IsButtonReleased(MouseButton.Right)");
       }
 
-      #endregion
+      objetoMenor.MatrizRotacao(0.05f);
 
+      #endregion
     }
 
     protected override void OnResize(ResizeEventArgs e)
