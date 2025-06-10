@@ -1,10 +1,7 @@
-//https://github.com/mono/opentk/blob/main/Source/Examples/Shapes/Old/Cube.cs
-
 #define CG_Debug
 using CG_Biblioteca;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using System;
 using System.Drawing;
 
 namespace gcgcg
@@ -12,69 +9,84 @@ namespace gcgcg
   internal class Cubo : Objeto
   {
     Ponto4D[] vertices;
-    // int[] indices;
-    // Vector3[] normals;
-    // int[] colors;
 
     public Cubo(Objeto _paiRef, ref char _rotulo) : base(_paiRef, ref _rotulo)
     {
       PrimitivaTipo = PrimitiveType.Triangles;
-      PrimitivaTamanho = 10;
+      PrimitivaTamanho = 36; // 6 faces × 2 triângulos × 3 vértices
 
       vertices = new Ponto4D[]
       {
-        new Ponto4D(-1.0f, -1.0f,  1.0f),
-        new Ponto4D( 1.0f, -1.0f,  1.0f),
-        new Ponto4D( 1.0f,  1.0f,  1.0f),
-        new Ponto4D(-1.0f,  1.0f,  1.0f),
-        new Ponto4D(-1.0f, -1.0f, -1.0f),
-        new Ponto4D( 1.0f, -1.0f, -1.0f),
-        new Ponto4D( 1.0f,  1.0f, -1.0f),
-        new Ponto4D(-1.0f,  1.0f, -1.0f)
+        // Vértices do cubo
+        new Ponto4D(-1.0f, -1.0f,  1.0f), // 0
+        new Ponto4D( 1.0f, -1.0f,  1.0f), // 1
+        new Ponto4D( 1.0f,  1.0f,  1.0f), // 2
+        new Ponto4D(-1.0f,  1.0f,  1.0f), // 3
+        new Ponto4D(-1.0f, -1.0f, -1.0f), // 4
+        new Ponto4D( 1.0f, -1.0f, -1.0f), // 5
+        new Ponto4D( 1.0f,  1.0f, -1.0f), // 6
+        new Ponto4D(-1.0f,  1.0f, -1.0f)  // 7
       };
 
-      // // 0, 1, 2, 3 Face da frente
-      base.PontosAdicionar(vertices[0]);
+      // Face Frente
+      base.PontosAdicionar(vertices[0]); // triângulo 1
       base.PontosAdicionar(vertices[1]);
+      base.PontosAdicionar(vertices[2]);
+      
+      base.PontosAdicionar(vertices[0]); // triângulo 2
       base.PontosAdicionar(vertices[2]);
       base.PontosAdicionar(vertices[3]);
 
-      // // 3, 2, 6, 7 Face de cima
-      base.PontosAdicionar(vertices[2]);
-      base.PontosAdicionar(vertices[3]);
-      base.PontosAdicionar(vertices[7]);
-      base.PontosAdicionar(vertices[6]);
-
-      // // 4, 7, 6, 5 Face do fundo
+      // Face Fundo
+      base.PontosAdicionar(vertices[5]); // triângulo 1
       base.PontosAdicionar(vertices[4]);
-      base.PontosAdicionar(vertices[5]);
-      base.PontosAdicionar(vertices[6]);
       base.PontosAdicionar(vertices[7]);
+      
+      base.PontosAdicionar(vertices[5]); // triângulo 2
+      base.PontosAdicionar(vertices[7]);
+      base.PontosAdicionar(vertices[6]);
 
-      // // 0, 3, 7, 4 Face direita
-      base.PontosAdicionar(vertices[1]);
+      // Face Cima
+      base.PontosAdicionar(vertices[3]); // triângulo 1
       base.PontosAdicionar(vertices[2]);
       base.PontosAdicionar(vertices[6]);
-      base.PontosAdicionar(vertices[5]);
+      
+      base.PontosAdicionar(vertices[3]); // triângulo 2
+      base.PontosAdicionar(vertices[6]);
+      base.PontosAdicionar(vertices[7]);
 
-      // // 0, 4, 5, 1 Face de baixo
-      base.PontosAdicionar(vertices[0]);
+      // Face baixo
+      base.PontosAdicionar(vertices[4]); // triângulo 1
+      base.PontosAdicionar(vertices[5]);
       base.PontosAdicionar(vertices[1]);
-      base.PontosAdicionar(vertices[5]);
-      base.PontosAdicionar(vertices[4]);
+      
+      base.PontosAdicionar(vertices[4]); // triângulo 2
+      base.PontosAdicionar(vertices[1]);
+      base.PontosAdicionar(vertices[0]);
 
-      // // 1, 5, 6, 2 Face esquerda
+      // Face direita
+      base.PontosAdicionar(vertices[1]); // triângulo 1
+      base.PontosAdicionar(vertices[5]);
+      base.PontosAdicionar(vertices[6]);
+      
+      base.PontosAdicionar(vertices[1]); // triângulo 2
+      base.PontosAdicionar(vertices[6]);
+      base.PontosAdicionar(vertices[2]);
+
+      // Face esquerda
+      base.PontosAdicionar(vertices[4]); // triângulo 1
       base.PontosAdicionar(vertices[0]);
       base.PontosAdicionar(vertices[3]);
+      
+      base.PontosAdicionar(vertices[4]); // triângulo 2
+      base.PontosAdicionar(vertices[3]);
       base.PontosAdicionar(vertices[7]);
-      base.PontosAdicionar(vertices[4]);
 
       Atualizar();
     }
 
     private void Atualizar()
     {
-
       base.ObjetoAtualizar();
     }
 
@@ -88,17 +100,5 @@ namespace gcgcg
     }
 #endif
 
-    public void Move(double angle, int raio)
-    {
-      foreach (Ponto4D ponto in vertices)
-      {
-        double x = Math.Cos(angle) * raio;
-        double z = Math.Sin(angle) * raio;
-
-        ponto.X += x;
-        ponto.Z += z;
-      }
-      base.ObjetoAtualizar();
-    }
   }
 }
