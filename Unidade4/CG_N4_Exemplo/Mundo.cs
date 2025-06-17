@@ -55,6 +55,10 @@ namespace gcgcg
     private Vector2 _ultimaPosicaoMouse;
     private bool _primeiroMovimentoMouse = true;
 
+    private float _orbitYaw = 0.0f;
+    private float _orbitPitch = 0.0f;
+    private float _orbitRadius = 5.0f;
+
     private Ponto objetoMenor;
 
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
@@ -243,10 +247,28 @@ namespace gcgcg
 
         _ultimaPosicaoMouse = mouse;
         float sensibilidade = 0.2f;
-        _camera.Yaw += deltaX * sensibilidade;
-        _camera.Pitch += deltaY * sensibilidade;
 
-        _camera.Pitch = Math.Clamp(_camera.Pitch, -89f, 89f);
+        Vector3 targetPosition = Vector3.Zero;
+        if (objetoSelecionado != null && objetoSelecionado.Bbox() != null)
+        {
+          Ponto4D centroBBox = objetoSelecionado.Bbox().ObterCentro;
+          targetPosition = new Vector3((float)centroBBox.X, (float)centroBBox.Y, (float)centroBBox.Z);
+        }
+        else
+        {
+          targetPosition = Vector3.Zero;
+        }
+
+        _orbitYaw += MathHelper.DegreesToRadians(deltaX * sensibilidade);
+        _orbitPitch -= MathHelper.DegreesToRadians(deltaY * sensibilidade); // Inverter deltaY para órbita intuitiva
+
+        _orbitPitch = Math.Clamp(_orbitPitch, MathHelper.DegreesToRadians(-89.0f), MathHelper.DegreesToRadians(89.0f));
+
+        float x = targetPosition.X + _orbitRadius * MathF.Cos(_orbitPitch) * MathF.Sin(_orbitYaw);
+        float y = targetPosition.Y + _orbitRadius * MathF.Sin(_orbitPitch);
+        float z = targetPosition.Z + _orbitRadius * MathF.Cos(_orbitPitch) * MathF.Cos(_orbitYaw);
+
+        _camera.Position = new Vector3(x, y, z);
 
       }
       else
