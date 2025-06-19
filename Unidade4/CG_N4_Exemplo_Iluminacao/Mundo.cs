@@ -117,6 +117,52 @@ namespace gcgcg
             -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
         };
 
+         private readonly float[] _verticesNoLight =
+        {
+            // Position
+            -0.5f, -0.5f, -0.5f, // Front face
+             0.5f, -0.5f, -0.5f,
+             0.5f,  0.5f, -0.5f,
+             0.5f,  0.5f, -0.5f,
+            -0.5f,  0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f, -0.5f,  0.5f, // Back face
+             0.5f, -0.5f,  0.5f,
+             0.5f,  0.5f,  0.5f,
+             0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+            -0.5f, -0.5f,  0.5f,
+
+            -0.5f,  0.5f,  0.5f, // Left face
+            -0.5f,  0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+
+             0.5f,  0.5f,  0.5f, // Right face
+             0.5f,  0.5f, -0.5f,
+             0.5f, -0.5f, -0.5f,
+             0.5f, -0.5f, -0.5f,
+             0.5f, -0.5f,  0.5f,
+             0.5f,  0.5f,  0.5f,
+
+            -0.5f, -0.5f, -0.5f, // Bottom face
+             0.5f, -0.5f, -0.5f,
+             0.5f, -0.5f,  0.5f,
+             0.5f, -0.5f,  0.5f,
+            -0.5f, -0.5f,  0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f,  0.5f, -0.5f, // Top face
+             0.5f,  0.5f, -0.5f,
+             0.5f,  0.5f,  0.5f,
+             0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f, -0.5f
+        };
+
          private Texture _diffuseMap;
 
         // The specular map is a black/white representation of how specular each part of the texture is.
@@ -243,13 +289,9 @@ namespace gcgcg
       
       
       
-         #region Objeto: ponto  
-      objetoSelecionado = new Ponto(mundo, ref rotuloNovo, new Ponto4D(1.0, 0.5, 1.0));
-      objetoSelecionado.PrimitivaTipo = PrimitiveType.Points;
-      objetoSelecionado.PrimitivaTamanho = 5;
-      #endregion
+      
       #region Objeto: Cubo
-      objetoMenor = new Ponto(mundo, ref rotuloNovo, new Ponto4D(1.0, 0.0, 1.0))
+      objetoMenor = new Ponto(mundo, ref rotuloNovo, new Ponto4D(0.0, 0.0, 0.0))
       {
         PrimitivaTamanho = 10,
         shaderCor = _shaderAzul
@@ -275,6 +317,7 @@ namespace gcgcg
 
       switch (lighting_control)
       {
+        
         case 2:
           _diffuseMap.Use(TextureUnit.Texture0);
           _specularMap.Use(TextureUnit.Texture1);
@@ -309,6 +352,34 @@ namespace gcgcg
           _lampShader.SetMatrix4("model", lampMatrix);
           _lampShader.SetMatrix4("view", _camera.GetViewMatrix());
           _lampShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+          break;
+
+          case 0:
+
+         _lightingShader.Use();
+
+            // Matrix4.Identity is used as the matrix, since we just want to draw it at 0, 0, 0
+            _lightingShader.SetMatrix4("model", Matrix4.Identity);
+            _lightingShader.SetMatrix4("view", _camera.GetViewMatrix());
+            _lightingShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+
+            _lightingShader.SetVector3("objectColor", new Vector3(1.0f, 0.5f, 0.31f));
+            _lightingShader.SetVector3("lightColor", new Vector3(1.0f, 1.0f, 1.0f));
+
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+
+            // Draw the lamp, this is mostly the same as for the model cube
+            GL.BindVertexArray(_vaoLamp);
+
+            _lampShader.Use();
+
+             lampMatrix = Matrix4.CreateScale(0.2f); // We scale the lamp cube down a bit to make it less dominant
+            lampMatrix = lampMatrix * Matrix4.CreateTranslation(_lightPos);
+
+            _lampShader.SetMatrix4("model", lampMatrix);
+            _lampShader.SetMatrix4("view", _camera.GetViewMatrix());
+            _lampShader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+        
           break;
         case 1:
 
@@ -622,13 +693,49 @@ namespace gcgcg
         objetoSelecionado.MatrizEscalaXYZBBox(0.5, 0.5, 0.5);
       if (estadoTeclado.IsKeyPressed(Keys.End) && objetoSelecionado != null)
         objetoSelecionado.MatrizEscalaXYZBBox(2, 2, 2);
-      if (estadoTeclado.IsKeyPressed(Keys.D1) && objetoSelecionado != null)
+
+      if (estadoTeclado.IsKeyPressed(Keys.D0))
+      {
+         GL.UseProgram(0);
+        _vertexBufferObject = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
+            GL.BufferData(BufferTarget.ArrayBuffer, _verticesNoLight.Length * sizeof(float), _verticesNoLight, BufferUsageHint.StaticDraw);
+
+            // Load the two different shaders, they use the same vertex shader program. However they have two different fragment shaders.
+            // This is because the lamp only uses a basic shader to turn it white, it wouldn't make sense to have the lamp lit in other colors.
+            // The lighting shaders uses the lighting.frag shader which is what a large part of this chapter will be about
+            _lightingShader = new Shader("Shaders/shader.vert", "Shaders/lighting_no.frag");
+            _lampShader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
+
+            {
+                // Initialize the vao for the model
+                _vaoModel = GL.GenVertexArray();
+                GL.BindVertexArray(_vaoModel);
+
+                var vertexLocation = _lightingShader.GetAttribLocation("aPos");
+                GL.EnableVertexAttribArray(vertexLocation);
+                GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            }
+
+            {
+                // Initialize the vao for the lamp, this is mostly the same as the code for the model cube
+                _vaoLamp = GL.GenVertexArray();
+                GL.BindVertexArray(_vaoLamp);
+
+                // Set the vertex attributes (only position data for our lamp)
+                var vertexLocation = _lampShader.GetAttribLocation("aPos");
+                GL.EnableVertexAttribArray(vertexLocation);
+                GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            }
+        lighting_control = 0;
+      }
+      if (estadoTeclado.IsKeyPressed(Keys.D1))
       {
         GL.UseProgram(0);
         _lightingShader = new Shader("Shaders/shader.vert", "Shaders/lighting_basic.frag");
         _vertexBufferObject = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
-        GL.BufferData(BufferTarget.ArrayBuffer, _verticesBasic.Length * sizeof(float), _verticesBasic, BufferUsageHint.StaticDraw); 
+        GL.BufferData(BufferTarget.ArrayBuffer, _verticesBasic.Length * sizeof(float), _verticesBasic, BufferUsageHint.StaticDraw);
         _vaoModel = GL.GenVertexArray();
         GL.BindVertexArray(_vaoModel);
 
@@ -640,7 +747,7 @@ namespace gcgcg
         // We now need to define the layout of the normal so the shader can use it
         var normalLocation = _lightingShader.GetAttribLocation("aNormal");
         GL.EnableVertexAttribArray(normalLocation);
-        GL.VertexAttribPointer(normalLocation, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));  
+        GL.VertexAttribPointer(normalLocation, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
         _vaoLamp = GL.GenVertexArray();
         GL.BindVertexArray(_vaoLamp);
 
@@ -651,10 +758,10 @@ namespace gcgcg
         // The two cubes still use the same position, and since the position is already in the graphics memory it is actually
         // better to do it this way. Look through the web version for a much better understanding of this.
         GL.VertexAttribPointer(positionLocation, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
-            
+
         lighting_control = 1;
       }
-      if (estadoTeclado.IsKeyPressed(Keys.D2) && objetoSelecionado != null)
+      if (estadoTeclado.IsKeyPressed(Keys.D2))
       {
         GL.UseProgram(0);
         _vertexBufferObject = GL.GenBuffer();
@@ -699,7 +806,7 @@ namespace gcgcg
         lighting_control = 2;
        }
       
-      if (estadoTeclado.IsKeyPressed(Keys.D3) && objetoSelecionado != null)
+      if (estadoTeclado.IsKeyPressed(Keys.D3))
       {
         GL.UseProgram(0);
          _vertexBufferObject = GL.GenBuffer();
@@ -740,7 +847,7 @@ namespace gcgcg
         lighting_control = 3;
       }
 
-      if (estadoTeclado.IsKeyPressed(Keys.D4) && objetoSelecionado != null)
+      if (estadoTeclado.IsKeyPressed(Keys.D4))
       {
         GL.UseProgram(0);
          _vertexBufferObject = GL.GenBuffer();
@@ -776,7 +883,7 @@ namespace gcgcg
 
         lighting_control = 4;
       }
-      if (estadoTeclado.IsKeyPressed(Keys.D5) && objetoSelecionado != null)
+      if (estadoTeclado.IsKeyPressed(Keys.D5))
       {
         GL.UseProgram(0);
         _vertexBufferObject = GL.GenBuffer();
@@ -812,7 +919,7 @@ namespace gcgcg
         lighting_control = 5;
       }
 
-      if (estadoTeclado.IsKeyPressed(Keys.D6) && objetoSelecionado != null)
+      if (estadoTeclado.IsKeyPressed(Keys.D6))
       {
         GL.UseProgram(0);
         _vertexBufferObject = GL.GenBuffer();
