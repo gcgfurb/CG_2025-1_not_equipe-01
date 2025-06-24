@@ -1047,11 +1047,9 @@ namespace gcgcg
     protected void garbageColector()
     {
        GL.DeleteProgram(_lightingShader.Handle);
-       GL.DeleteProgram(_lampShader.Handle);
 
       // Delete VAOs and VBOs
       GL.DeleteVertexArray(_vaoModel);
-      GL.DeleteVertexArray(_vaoLamp);
       GL.DeleteBuffer(_vertexBufferObject);
 
       // Delete textures
