@@ -55,7 +55,7 @@ namespace gcgcg
     private Vector2 _ultimaPosicaoMouse;
     private bool _primeiroMovimentoMouse = true;
 
-    private Ponto objetoMenor;
+    private Cubo objetoMenor;
 
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
            : base(gameWindowSettings, nativeWindowSettings)
@@ -114,12 +114,9 @@ namespace gcgcg
       objetoSelecionado = new Cubo(mundo, ref rotuloNovo);
       // objetoSelecionado.shaderCor = _shaderVerde;
 
-      objetoMenor = new Ponto(objetoSelecionado, ref rotuloNovo)
-      {
-        PrimitivaTamanho = 10,
-        shaderCor = _shaderAzul
-      };
-      objetoMenor.MatrizTranslacaoXYZ(2, 0, 0);
+      objetoMenor = new Cubo(objetoSelecionado, ref rotuloNovo);
+      objetoMenor.MatrizTranslacaoXYZ(10, 0, 0);
+      objetoMenor.MatrizEscalaXYZ(0.5, 0.5, 0.5);
       #endregion
 
       // objetoSelecionado.shaderCor = _shaderAmarela;
