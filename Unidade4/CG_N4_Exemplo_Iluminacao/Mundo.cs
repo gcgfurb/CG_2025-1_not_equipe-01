@@ -223,6 +223,15 @@ namespace gcgcg
 
     Matrix4 lampMatrix;
 
+      private bool mouseDragging = false;
+    private Vector2 lastMouse;
+
+    private float yaw = -90f;
+    private float pitch = 0f;
+    private float distance = 10f;
+
+    private Vector3 target = Vector3.Zero;
+
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
            : base(gameWindowSettings, nativeWindowSettings)
     {
@@ -999,41 +1008,56 @@ namespace gcgcg
 
       if (MouseState.IsButtonDown(MouseButton.Left))
       {
-        var mouse = MouseState.Position;
+        
+          if (!mouseDragging)
+          {
+          // lastMouse = new Vector2(MousePosition.X, MousePosition.Y);
+              lastMouse = MouseState.Position; 
+            mouseDragging = true;
+          }
+          else
+          {
+          // Vector2 currentMouse = new Vector2(MousePosition.X, MousePosition.Y);
+           Vector2 currentMouse = MouseState.Position;
+            Vector2 delta = currentMouse - lastMouse;
+            lastMouse = currentMouse;
 
-        if (_primeiroMovimentoMouse)
-        {
-          _ultimaPosicaoMouse = mouse;
-          _primeiroMovimentoMouse = false;
+            float sensitivity = 0.2f;
+            yaw += delta.X * sensitivity;
+            pitch -= delta.Y * sensitivity;
+            pitch = Math.Clamp(pitch, -89f, 89f);
+          }
+
+          float yawRad = MathHelper.DegreesToRadians(yaw);
+          float pitchRad = MathHelper.DegreesToRadians(pitch);
+
+          float x = distance * MathF.Cos(pitchRad) * MathF.Cos(yawRad);
+          float y = distance * MathF.Sin(pitchRad);
+          float z = distance * MathF.Cos(pitchRad) * MathF.Sin(yawRad);
+
+          _camera.Position = new Vector3(x, y, z) + target;
+
+          Vector3 direction = Vector3.Normalize(target - _camera.Position);
+          _camera.Pitch = MathHelper.RadiansToDegrees(MathF.Asin(direction.Y));
+          _camera.Yaw = MathHelper.RadiansToDegrees(MathF.Atan2(direction.Z, direction.X));
         }
-
-        var deltaX = mouse.X - _ultimaPosicaoMouse.X;
-        var deltaY = _ultimaPosicaoMouse.Y - mouse.Y; // Inverter Y (sistema de coordenadas de tela)
-
-        _ultimaPosicaoMouse = mouse;
-        float sensibilidade = 0.2f;
-        _camera.Yaw += deltaX * sensibilidade;
-        _camera.Pitch += deltaY * sensibilidade;
-
-        _camera.Pitch = Math.Clamp(_camera.Pitch, -89f, 89f);
-
-      }
       else
-      {
-        _primeiroMovimentoMouse = true;
-      }
-
+        {
+          mouseDragging = false;
+        }
+      
+      
       if (MouseState.IsButtonDown(MouseButton.Right) && objetoSelecionado != null)
-      {
-        Console.WriteLine("MouseState.IsButtonDown(MouseButton.Right)");
+        {
+          Console.WriteLine("MouseState.IsButtonDown(MouseButton.Right)");
 
-        int janelaLargura = ClientSize.X;
-        int janelaAltura = ClientSize.Y;
-        Ponto4D mousePonto = new Ponto4D(MousePosition.X, MousePosition.Y);
-        Ponto4D sruPonto = Utilitario.NDC_TelaSRU(janelaLargura, janelaAltura, mousePonto);
+          int janelaLargura = ClientSize.X;
+          int janelaAltura = ClientSize.Y;
+          Ponto4D mousePonto = new Ponto4D(MousePosition.X, MousePosition.Y);
+          Ponto4D sruPonto = Utilitario.NDC_TelaSRU(janelaLargura, janelaAltura, mousePonto);
 
-        objetoSelecionado.PontosAlterar(sruPonto, 0);
-      }
+          objetoSelecionado.PontosAlterar(sruPonto, 0);
+        }
       if (MouseState.IsButtonReleased(MouseButton.Right))
       {
         Console.WriteLine("MouseState.IsButtonReleased(MouseButton.Right)");
