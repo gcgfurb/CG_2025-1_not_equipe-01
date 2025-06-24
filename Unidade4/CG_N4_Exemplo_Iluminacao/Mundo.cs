@@ -284,7 +284,7 @@ namespace gcgcg
             
             // Our two textures are loaded in from memory, you should head over and
             // check them out and compare them to the results.
-            _diffuseMap = Texture.LoadFromFile("Resources/IMG_0657.png");
+            _diffuseMap = Texture.LoadFromFile("Resources/imagem_grupo.png");
             _specularMap = Texture.LoadFromFile("Resources/container2_specular.png");
       
       
@@ -696,6 +696,7 @@ namespace gcgcg
 
       if (estadoTeclado.IsKeyPressed(Keys.D0))
       {
+        garbageColector();
          GL.UseProgram(0);
         _vertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
@@ -731,6 +732,7 @@ namespace gcgcg
       }
       if (estadoTeclado.IsKeyPressed(Keys.D1))
       {
+        garbageColector();
         GL.UseProgram(0);
         _lightingShader = new Shader("Shaders/shader.vert", "Shaders/lighting_basic.frag");
         _vertexBufferObject = GL.GenBuffer();
@@ -763,6 +765,7 @@ namespace gcgcg
       }
       if (estadoTeclado.IsKeyPressed(Keys.D2))
       {
+        garbageColector();
         GL.UseProgram(0);
         _vertexBufferObject = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
@@ -803,11 +806,14 @@ namespace gcgcg
 
         // Our two textures are loaded in from memory, you should head over and
         // check them out and compare them to the results.
+        _diffuseMap = Texture.LoadFromFile("Resources/imagem_grupo.png");
+            _specularMap = Texture.LoadFromFile("Resources/container2_specular.png");
         lighting_control = 2;
        }
       
       if (estadoTeclado.IsKeyPressed(Keys.D3))
       {
+        garbageColector();
         GL.UseProgram(0);
          _vertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
@@ -842,6 +848,8 @@ namespace gcgcg
                 GL.EnableVertexAttribArray(positionLocation);
                 GL.VertexAttribPointer(positionLocation, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
             
+            _diffuseMap = Texture.LoadFromFile("Resources/imagem_grupo.png");
+            _specularMap = Texture.LoadFromFile("Resources/container2_specular.png");
 
             
         lighting_control = 3;
@@ -849,6 +857,7 @@ namespace gcgcg
 
       if (estadoTeclado.IsKeyPressed(Keys.D4))
       {
+        garbageColector();
         GL.UseProgram(0);
          _vertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
@@ -880,11 +889,14 @@ namespace gcgcg
                 GL.EnableVertexAttribArray(positionLocation);
                 GL.VertexAttribPointer(positionLocation, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
             }
+            _diffuseMap = Texture.LoadFromFile("Resources/imagem_grupo.png");
+            _specularMap = Texture.LoadFromFile("Resources/container2_specular.png");
 
         lighting_control = 4;
       }
       if (estadoTeclado.IsKeyPressed(Keys.D5))
       {
+        garbageColector();
         GL.UseProgram(0);
         _vertexBufferObject = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
@@ -915,12 +927,15 @@ namespace gcgcg
           GL.EnableVertexAttribArray(positionLocation);
           GL.VertexAttribPointer(positionLocation, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
         }
+        _diffuseMap = Texture.LoadFromFile("Resources/imagem_grupo.png");
+            _specularMap = Texture.LoadFromFile("Resources/container2_specular.png");
 
         lighting_control = 5;
       }
 
       if (estadoTeclado.IsKeyPressed(Keys.D6))
       {
+        garbageColector();
         GL.UseProgram(0);
         _vertexBufferObject = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
@@ -952,6 +967,8 @@ namespace gcgcg
           positionLocation = _lampShader.GetAttribLocation("aPos");
           GL.EnableVertexAttribArray(positionLocation);
           GL.VertexAttribPointer(positionLocation, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
+          _diffuseMap = Texture.LoadFromFile("Resources/imagem_grupo.png");
+            _specularMap = Texture.LoadFromFile("Resources/container2_specular.png");
         
 
         lighting_control = 6;
@@ -1027,6 +1044,21 @@ namespace gcgcg
       #endregion
     }
 
+    protected void garbageColector()
+    {
+       GL.DeleteProgram(_lightingShader.Handle);
+       GL.DeleteProgram(_lampShader.Handle);
+
+      // Delete VAOs and VBOs
+      GL.DeleteVertexArray(_vaoModel);
+      GL.DeleteVertexArray(_vaoLamp);
+      GL.DeleteBuffer(_vertexBufferObject);
+
+      // Delete textures
+      GL.DeleteTexture(_diffuseMap.Handle);
+      GL.DeleteTexture(_specularMap.Handle);
+    }
+
     protected override void OnResize(ResizeEventArgs e)
     {
       base.OnResize(e);
@@ -1041,20 +1073,8 @@ namespace gcgcg
     {
       mundo.OnUnload();
 
-      GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-      GL.BindVertexArray(0);
-      GL.UseProgram(0);
+      garbageColector();
 
-      GL.DeleteBuffer(_vertexBufferObject_sruEixos);
-      GL.DeleteVertexArray(_vertexArrayObject_sruEixos);
-
-      GL.DeleteProgram(_shaderBranca.Handle);
-      GL.DeleteProgram(_shaderVermelha.Handle);
-      GL.DeleteProgram(_shaderVerde.Handle);
-      GL.DeleteProgram(_shaderAzul.Handle);
-      GL.DeleteProgram(_shaderCiano.Handle);
-      GL.DeleteProgram(_shaderMagenta.Handle);
-      GL.DeleteProgram(_shaderAmarela.Handle);
 
       base.OnUnload();
     }
