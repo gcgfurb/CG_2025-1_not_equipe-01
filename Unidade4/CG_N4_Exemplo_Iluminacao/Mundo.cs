@@ -295,20 +295,23 @@ namespace gcgcg
             // check them out and compare them to the results.
             _diffuseMap = Texture.LoadFromFile("Resources/imagem_grupo.png");
             _specularMap = Texture.LoadFromFile("Resources/container2_specular.png");
-      
-      
-      
-      
+
+
+
+
       #region Objeto: Cubo
-      objetoMenor = new Ponto(mundo, ref rotuloNovo, new Ponto4D(0.0, 0.0, 0.0))
+      objetoSelecionado = new Cubo(mundo, ref rotuloNovo);
+      objetoSelecionado.MatrizTranslacaoXYZ(10, 0, 0);
+      objetoSelecionado.MatrizEscalaXYZ(0.1, 0.1, 0.1);
+      /*objetoMenor = new Ponto(mundo, ref rotuloNovo, new Ponto4D(0.0, 0.0, 0.0))
       {
         PrimitivaTamanho = 10,
         shaderCor = _shaderAzul
       };
-      objetoMenor.MatrizTranslacaoXYZ(2, 0, 0);
+      objetoMenor.MatrizTranslacaoXYZ(2, 0, 0);*/
       #endregion
 
-            _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
+      _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
 
             CursorState = CursorState.Grabbed;
         }
@@ -1063,7 +1066,7 @@ namespace gcgcg
         Console.WriteLine("MouseState.IsButtonReleased(MouseButton.Right)");
       }
 
-      objetoMenor.MatrizRotacao(0.05f);
+      objetoSelecionado.MatrizRotacao(0.05f);
 
       #endregion
     }
